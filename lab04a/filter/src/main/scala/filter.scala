@@ -7,7 +7,7 @@ object filter extends App {
   val conf = new SparkConf(true).setAppName("irina.samsonova").setMaster("local[*]")
   val spark = SparkSession.builder().config(conf).getOrCreate
 
-  spark.conf.set("spark.sql.shuffle.partitions", 4000)
+  spark.conf.set("spark.sql.shuffle.partitions", 800)
 
   main
 
