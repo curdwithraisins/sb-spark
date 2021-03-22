@@ -27,7 +27,13 @@ class KafkaConnect(spark: SparkSession) {
       .format("kafka")
       .option("kafka.bootstrap.servers", "spark-master-1:6667")
       .option("subscribe", topic_name)
-      .option("startingOffsets", if (offset == "earliest") s"earliest" else s"""{"${topic_name}": {"0":$offset}}""")
+      .option("startingOffsets",
+        offset match {
+          case x if isAllDigits(x) => s""" { "${topic}": { "0": ${x} } }  """
+          case _ => "earliest"
+        }
+      )
+//      .option("startingOffsets", if (offset == "earliest") s"earliest" else s"""{"${topic_name}": {"0":$offset}}""")
       .load()
       .selectExpr("cast (value as string) as json")
       .select(from_json($"json", schema).as[Visit])
