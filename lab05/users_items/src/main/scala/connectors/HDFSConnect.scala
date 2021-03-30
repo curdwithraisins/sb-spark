@@ -17,7 +17,7 @@ class HDFSConnect(spark: SparkSession) {
   import spark.implicits._
 
   private val input_dir = Try{spark.sparkContext.getConf.get("spark.users_items.input_dir")}.getOrElse("/user/irina.samsonova/visits/*/*/*")
-  private val output_dir = Try{spark.sparkContext.getConf.get("spark.users_items.output_dir")}.getOrElse("/user/irina.samsonova/users_items/")
+  private val output_dir = Try{spark.sparkContext.getConf.get("spark.users_items.output_dir")}.getOrElse("/user/irina.samsonova/users_items")
   private val update = Try{spark.sparkContext.getConf.get("spark.users_items.update")}.getOrElse(0)
 
   def read: Dataset[Visit] = {
