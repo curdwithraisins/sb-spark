@@ -16,18 +16,18 @@ case class Visit(
 class HDFSConnect(spark: SparkSession) {
   import spark.implicits._
 
-  private val input_dir = Try{spark.sparkContext.getConf.get("spark.users_items.input_dir")}.getOrElse("data/visits/*/*/*")
-  private val output_dir = Try{spark.sparkContext.getConf.get("spark.users_items.output_dir")}.getOrElse("data/users_items/")
+  private val input_dir = Try{spark.sparkContext.getConf.get("spark.users_items.input_dir")}.getOrElse("/user/irina.samsonova/visits/*/*/*")
+  private val output_dir = Try{spark.sparkContext.getConf.get("spark.users_items.output_dir")}.getOrElse("/user/irina.samsonova/users_items/")
   private val update = Try{spark.sparkContext.getConf.get("spark.users_items.update")}.getOrElse(0)
 
   def read: Dataset[Visit] = {
     spark.read.json(input_dir).as[Visit]
   }
 
-  def write(df: DataFrame) = {
+  def write(df: DataFrame, partition: String) = {
     df.write
       .mode(if (update == 0) SaveMode.Overwrite else SaveMode.Append)
-      .partitionBy("p_date")
-      .parquet(s"$output_dir/")
+      //      .partitionBy(partition)
+      .parquet(s"$output_dir/$partition")
   }
 }
